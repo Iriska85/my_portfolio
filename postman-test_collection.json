@@ -1,0 +1,591 @@
+{
+	"info": {
+		"_postman_id": "391b7a9a-5e19-485f-b932-6d0ea114d198",
+		"name": "postman-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21644246"
+	},
+	"item": [
+		{
+			"name": "Request fail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request should fail\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Healthcheck is successfull\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "MyUniqueApiKey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User register",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let date = Date.now();\r",
+							"let email = \"kittycat.\" + date + \"@mail.com\";\r",
+							"\r",
+							"pm.environment.set(\"useremail\", email);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 650ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(650);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,202]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.email).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"_id is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data._id).to.be.a('number');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{useremail}}\",\r\n  \"password\": \"nascar123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/users/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 650ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(650);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Token is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.token).to.be.a('string');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{useremail}}\",\r\n  \"password\": \"nascar123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/users/tokens",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data is array\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/movies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set variable for movie of user1\", function(){\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.environment.set(\"movie1user1\", data._id)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,202]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Title is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.title).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"_id is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data._id).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Year is a number\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.year).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property _id\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('_id')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property title\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('title')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property year\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('year')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Title value is Interstellar\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.title).to.eql('Interstellar');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Year value is 2014\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.year).to.eql(2014);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Interstellar\",\r\n  \"year\": 2014\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/movies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Title is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.title).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"_id is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data._id).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Year is a number\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.year).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Owner is a number\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.owner).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property _id\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('_id')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property title\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('title')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property year\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('year')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property owner\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('owner')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/movies/{{movie1user1}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"movies",
+						"{{movie1user1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"_id is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data._id).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Message is a string\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.message).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property _id\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a property message\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.have.property('message');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Message value is 'Delete Success'\", function () {\r",
+							"    var {data} = pm.response.json();\r",
+							"    pm.expect(data.message).to.eql('Delete Success');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/movies/{{movie1user1}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"movies",
+						"{{movie1user1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all movies AGAIN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data is array\", function () {\r",
+							"    let {data} = pm.response.json();\r",
+							"    pm.expect(data).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/movies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
